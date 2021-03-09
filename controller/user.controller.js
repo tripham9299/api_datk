@@ -3,8 +3,6 @@ const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const bcrypt = require('bcryptjs')
 let controller = {}
-const jwtMethod = require('../jsonwebtoken/jwt.method');
-const secretKey = process.env.ACCESS_TOKEN_SECRET || "Tri09021999";
 
 controller.getListUser = async (req, res) => {
     try {
@@ -77,6 +75,27 @@ controller.updatePersonalInfor = async (req, res) => {
         res.status(500).json({ error: err })
     }
 
+}
+
+controller.changePass = async(req, res) => {
+
+    try {
+
+        let currentUser = await userModel.findById(req.user.id)
+        const salt = await bcrypt.genSalt(10)
+        const oldPass = req.body.old_password
+        let checkPass = await bcrypt.compare(oldPass, currentUser.password)
+        let newPass = await bcrypt.hash(req.body.new_password, salt)
+
+        if (checkPass) {
+            await currentUser.updateOne({password: newPass})
+            res.status(200).json({message: 'thanh cong'})
+        } else res.status(403).json({message: 'that bai'})
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ error: err })
+    }
 }
 
 
@@ -166,26 +185,5 @@ controller.unLockUser = async (req, res) => {
     }
 }
 
-controller.changePass = async(req, res) => {
-    console.log('server chnag huy')
-    try {
-        // const tokenClient = req.headers.authorization
-        // req.user = await jwtMethod.verifyToken(tokenClient, secretKey);
-        // let pass = await userModel.findById(req.user.id)
-        // const salt = await bcrypt.genSalt(10)
-        // const oldPass = req.body.oldPass
-        // let checkPass = await bcrypt.compare(oldPass, pass.password)
-        // let newPass = await bcrypt.hash(req.body.newPass, salt)
-        let currentUser = await userModel.findById(req.user.id)
-        if (checkPass) {
-            await currentUser.updateOne({password: newPass})
-            res.status(200).json({message: 'thanh cong'})
-        } else res.status(403).json({message: 'that bai'})
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({ error: err })
-    }
-}
 
 module.exports = controller

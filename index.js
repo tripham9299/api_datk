@@ -21,6 +21,8 @@ var userRouters = require('./routes/user.route')
 
 var authRouters = require('./routes/auth.route')
 
+var postRouters = require('./routes/post.route')
+
 var authMiddleware = require('./middleware/auth.middleware')
 
 
@@ -73,15 +75,9 @@ app.get('/', function (req, res) {
 })
 
 app.use('/auth', authRouters);
-// app.use('/product', productRouters);
 app.use('/user', userRouters);
-// app.use('/cart', cartRouters);
-// app.use('/order', orderRouters);
-// app.use('/category', categoryRouters);
-// app.use('/comment', commentRouters)
+app.use('/post', postRouters);
 
-// app.use('/service', serviceRouters);
-// app.use('/bill', billRouters);
 
 
 app.listen(port, () => console.log('Server is listening on port ' + port))

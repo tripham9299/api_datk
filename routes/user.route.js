@@ -13,11 +13,12 @@ router.post('/personal_infor_update',
 	fileUpload.single('avatar'),
 	authMiddleware.isAuth,
 	userController.updatePersonalInfor)
+router.post('/password/update',authMiddleware.isAuth, userController.changePass)
 // router.delete('/:id', userController.deleteUserById)
 // router.post('/', userController.addUser)
 // router.patch('/:id', userController.updateUserAdmin)
 // router.post('/lock/:id', userController.LockUser)
 // router.post('/unlock/:id', userController.unLockUser)
-// router.post('/changepass', userController.changePass)
+
 
 module.exports = router;
