@@ -23,6 +23,8 @@ var authRouters = require('./routes/auth.route')
 
 var postRouters = require('./routes/post.route')
 
+var roomRoutes = require('./routes/room.route')
+
 var authMiddleware = require('./middleware/auth.middleware')
 
 
@@ -77,6 +79,7 @@ app.get('/', function (req, res) {
 app.use('/auth', authRouters);
 app.use('/user', userRouters);
 app.use('/post', postRouters);
+app.use('/room',roomRoutes);
 
 
 

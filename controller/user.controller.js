@@ -80,17 +80,22 @@ controller.updatePersonalInfor = async (req, res) => {
 controller.changePass = async(req, res) => {
 
     try {
+        if(req.body.new_password!==req.body.retype_password){
+            res.status(403).json({code:403, message: 'incorect retype_password'})
+        }
+        else{
+            let currentUser = await userModel.findById(req.user.id)
+            const salt = await bcrypt.genSalt(10)
+            const oldPass = req.body.old_password
+            let checkPass = await bcrypt.compare(oldPass, currentUser.password)
+            let newPass = await bcrypt.hash(req.body.new_password, salt)
 
-        let currentUser = await userModel.findById(req.user.id)
-        const salt = await bcrypt.genSalt(10)
-        const oldPass = req.body.old_password
-        let checkPass = await bcrypt.compare(oldPass, currentUser.password)
-        let newPass = await bcrypt.hash(req.body.new_password, salt)
-
-        if (checkPass) {
-            await currentUser.updateOne({password: newPass})
-            res.status(200).json({message: 'thanh cong'})
-        } else res.status(403).json({message: 'that bai'})
+            if (checkPass) {
+                await currentUser.updateOne({password: newPass})
+                res.status(200).json({code:200, message: 'successfully'})
+            }
+            else res.status(403).json({code:403, message: 'failure'})
+        }
     }
     catch (err) {
         console.log(err);
@@ -98,66 +103,29 @@ controller.changePass = async(req, res) => {
     }
 }
 
-
-
-controller.checkUserByEmail = async (req, res) => {
-
-    try {
-        let email = req.email
-        let user = await userModel.findOne({ email: email })
-        if (!user) res.status(404).json("tài khoản không tồn tại");
-        res.json(user);
-    }
-    catch (err) {
-        res.status(500).json({ error: err })
-    }
-
-}
-
-
-controller.addUser = async (req, res) => {
-
-    try {
-
-        let userNew = new userModel(req.body)
-        userNew = await userNew.save()
-        res.json(userNew);
-    }
-    catch (err) {
-        res.status(500).json({ error: err })
-    }
-}
 
 controller.deleteUserById = async (req, res) => {
 
     try {
-        let id = req.params.id
-        let userDelete = await userModel.findByIdAndDelete(id)
-        res.json(userDelete);
+        let checkUserAdmin = await userModel.findOne({_id: req.user.id})
+        if(checkUserAdmin.role!="admin"){
+            res.status(404).json({message: "The account is not allowed to perform this action" })
+        }
+        else{
+            if(req.body.confirm==1){
+                let userDelete = await userModel.findByIdAndDelete(req.body.user_id)
+                 res.status(200).json({code:200,message: 'Deteted successfully'})
+            }
+            else{
+                res.json({code:200,message: 'Cancel'});
+            }
+        }
+
     }
     catch (err) {
         res.status(500).json({ error: err })
     }
 }
-
-controller.updateUserAdmin = async (req, res) => {
-
-    try {
-        let id = req.params.id || req.body._id
-        if (req.body.password) delete req.body.password
-        if (req.body.role) delete req.body.role
-        let userUpdate = await userModel.findOneAndUpdate({ _id: id }, req.body, { new: true })
-
-        res.json(userUpdate);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({ error: err })
-    }
-
-
-}
-
 
 controller.LockUser = async (req, res) => {
     try {

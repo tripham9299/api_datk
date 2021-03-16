@@ -14,7 +14,7 @@ router.post('/personal_infor_update',
 	authMiddleware.isAuth,
 	userController.updatePersonalInfor)
 router.post('/password/update',authMiddleware.isAuth, userController.changePass)
-// router.delete('/:id', userController.deleteUserById)
+router.post('/account/delete',authMiddleware.isAuth, userController.deleteUserById)
 // router.post('/', userController.addUser)
 // router.patch('/:id', userController.updateUserAdmin)
 // router.post('/lock/:id', userController.LockUser)

@@ -21,6 +21,7 @@ controller.login = async (req, res) => {
             let user = req.body;
             const checkUser = await userModel.findOne({ username: user.username }).lean();
             if (!checkUser) res.status(401).json({
+                code:401,
                 message: "Username or password is incorrect"
             })
 
@@ -28,10 +29,12 @@ controller.login = async (req, res) => {
                 const checkPass = await bcrypt.compare(user.password, checkUser.password)
                 delete checkUser.password;
                 if (!checkPass) res.status(401).json({
+                    code:401,
                     message: "Username or password is incorrect"
                 })
 
                 else if (checkUser.isBlock) res.status(401).json({
+                    code:401,
                     message: "The account has been locked"
                 })
 
@@ -60,6 +63,7 @@ controller.login = async (req, res) => {
 
 
                     return res.status(200).json({
+                        code:200,
                         message: "login success",
                         user: {
                             user_id:checkUser._id,
@@ -85,7 +89,7 @@ controller.logout=async (req, res)=> {
 
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
-        res.json({message: "logout success"})
+        res.json({code:200,message: "logout success"})
 
     }
     catch(err){
@@ -137,7 +141,7 @@ controller.signup = async (req, res) => {
         let userExits = await userModel.findOne({ email: newUserClient.username })
 
         if (emailExits) {
-            res.status(400).json({ message: "email khoản đã tồn tại" })
+            res.status(400).json({ message: "email đã tồn tại" })
         }
         else if(userExits){
             res.status(400).json({message:'username đã tồn tại'})
@@ -150,7 +154,7 @@ controller.signup = async (req, res) => {
             newUser.password = await bcrypt.hash(newUserClient.password, salt)
             newUser = await newUser.save();
 
-            res.status(200).json({ message: "Đăng ký thành công" })
+            res.status(200).json({ code:200, message: "Đăng ký thành công" })
         }
     }
     catch (err) {
