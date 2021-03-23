@@ -20,4 +20,6 @@ router.post('/delete', authMiddleware.isAuth, roomController.deleteRoom)
 
 router.get('/get/', roomController.getRoomInfor)
 
+router.post('/room_list/get',authMiddleware.isAuth,roomController.getRoomList)
+
 module.exports = router;

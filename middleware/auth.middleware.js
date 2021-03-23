@@ -3,7 +3,12 @@ const jwtMethod = require('../jsonwebtoken/jwt.method');
 const secretKey = process.env.ACCESS_TOKEN_SECRET || "Tri09021999";
 
 let isAuth = async (req, res, next) => {
-	const tokenClient = req.body.token || req.headers["x-access-token"] || req.headers["user-token"] || req.headers["token"] || req.headers.authorization || req.cookies['access_token'];
+
+	const tokenClient = req.body.token || req.headers["x-access-token"] ||
+	req.headers["user-token"] || req.headers["token"] ||
+	 req.headers.authorization || req.cookies['access_token'];
+
+
 	console.log(tokenClient)
 	if (!tokenClient) return res.status(401).json({
 		message: 'không có token '

@@ -118,4 +118,37 @@ controller.getRoomInfor = async (req, res) =>{
         res.status(500).json({ error: err })
     }
 }
+
+controller.getRoomList =async (req,res) =>{
+	try{
+		let checkUserMaster = await userModel.findOne({_id: req.user.id})
+		if(checkUserMaster.role!="master"){
+			res.status(404).json({message: "The account is not allowed to perform this action" })
+		}
+		else{
+	        let index = req.body.index
+	        var count= req.body.count
+	        var room_list = []
+	        let getRoomList = await roomModel.find({ userMaster: req.user.id})
+
+	        if( count + index > getRoomList.length ){
+	            count= getRoomList.length-index
+	        }
+
+	        if( index < getRoomList.length ){
+	            for( let i = 1; i<=count; i++){
+	                room_list.push(getRoomList[getRoomList.length-index-i])
+	            }
+	            res.status(200).json({code:"200", message: "successfully", room_list})
+	        }
+	        else{
+	            res.status(404).json({code:"404", message: "No data or end of list data entry"})
+	        }
+		}
+
+    }
+    catch(err){
+         res.status(500).json({error: err})
+    }
+}
 module.exports = controller
