@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema= mongoose.Schema
-var roomUserSchema = new Schema({
+var billSchema = new Schema({
 
 	userRent: {
 		type:Schema.Types.ObjectId,
@@ -9,6 +9,11 @@ var roomUserSchema = new Schema({
 	roomRent:{
 		type:Schema.Types.ObjectId,
 		ref:'rooms'
+	},
+	status: String,
+	time: {
+		type: Date,
+		default: Date.now
 	}
 
 });
@@ -16,4 +21,4 @@ var roomUserSchema = new Schema({
 
 
 
-module.exports =  mongoose.model('roomUsers', roomUserSchema);
+module.exports =  mongoose.model('bills', billSchema);

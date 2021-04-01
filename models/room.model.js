@@ -8,7 +8,12 @@ var roomSchema = new Schema({
 	},
 	address: String,
 	image : String,
-	price: Number
+	price: Number,
+	userRent:{
+		type:Schema.Types.ObjectId,
+		ref:'users',
+		default:null
+	}
 
 });
 
