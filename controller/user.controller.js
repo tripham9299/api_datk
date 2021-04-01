@@ -10,7 +10,7 @@ controller.getListUser = async (req, res) => {
         res.json(listUser);
     }
     catch (err) {
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -27,7 +27,7 @@ controller.getPersonalInfor = async (req, res) => {
     }
     catch (err) {
         console.log(err)
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 
 }
@@ -72,7 +72,7 @@ controller.updatePersonalInfor = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 
 }
@@ -81,7 +81,7 @@ controller.changePass = async(req, res) => {
 
     try {
         if(req.body.new_password!==req.body.retype_password){
-            res.status(403).json({code:403, message: 'incorect retype_password'})
+            res.status(200).json({code:403, message: 'incorect retype_password'})
         }
         else{
             let currentUser = await userModel.findById(req.user.id)
@@ -94,12 +94,12 @@ controller.changePass = async(req, res) => {
                 await currentUser.updateOne({password: newPass})
                 res.status(200).json({code:200, message: 'successfully'})
             }
-            else res.status(403).json({code:403, message: 'failure'})
+            else res.status(200).json({code:403, message: 'failure'})
         }
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -109,7 +109,7 @@ controller.deleteUserById = async (req, res) => {
     try {
         let checkUserAdmin = await userModel.findOne({_id: req.user.id})
         if(checkUserAdmin.role!="admin"){
-            res.status(404).json({message: "The account is not allowed to perform this action" })
+            res.status(200).json({message: "The account is not allowed to perform this action" })
         }
         else{
             if(req.body.confirm==1){
@@ -123,7 +123,7 @@ controller.deleteUserById = async (req, res) => {
 
     }
     catch (err) {
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -136,7 +136,7 @@ controller.LockUser = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -149,7 +149,7 @@ controller.unLockUser = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 

@@ -10,7 +10,7 @@ let isAuth = async (req, res, next) => {
 
 
 	console.log(tokenClient)
-	if (!tokenClient) return res.status(401).json({
+	if (!tokenClient) return res.status(200).json({
 		message: 'không có token '
 	})
 	try {
@@ -18,7 +18,7 @@ let isAuth = async (req, res, next) => {
 		next()
 	}
 	catch (err) {
-		return res.status(403).json({
+		return res.status(200).json({
 			message: err
 		})
 	}
@@ -28,7 +28,7 @@ let isAuth = async (req, res, next) => {
 
 let isAdmin = async (req, res, next) => {
 	const tokenClient = req.body.token || req.headers["x-access-token"] || req.headers["user-token"] || req.headers["token"] || req.headers.authorization || req.cookies['access_token'];
-	if (!tokenClient) return res.status(401).json({
+	if (!tokenClient) return res.status(200).json({
 		message: 'không có token '
 	})
 
@@ -38,7 +38,7 @@ let isAdmin = async (req, res, next) => {
 		next()
 	}
 	catch (err) {
-		return res.status(403).json({
+		return res.status(200).json({
 			message: 'Không được phép truy cập'
 		})
 	}

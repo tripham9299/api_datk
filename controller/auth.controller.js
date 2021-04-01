@@ -20,7 +20,7 @@ controller.login = async (req, res) => {
 
             let user = req.body;
             const checkUser = await userModel.findOne({ username: user.username }).lean();
-            if (!checkUser) res.status(401).json({
+            if (!checkUser) res.status(200).json({
                 code:401,
                 message: "Username or password is incorrect"
             })
@@ -28,12 +28,12 @@ controller.login = async (req, res) => {
             else {
                 const checkPass = await bcrypt.compare(user.password, checkUser.password)
                 delete checkUser.password;
-                if (!checkPass) res.status(401).json({
+                if (!checkPass) res.status(200).json({
                     code:401,
                     message: "Username or password is incorrect"
                 })
 
-                else if (checkUser.isBlock) res.status(401).json({
+                else if (checkUser.isBlock) res.status(200).json({
                     code:401,
                     message: "The account has been locked"
                 })
@@ -79,7 +79,7 @@ controller.login = async (req, res) => {
 
     }
     catch (err) {
-        res.status(500).json({ err: err })
+        res.status(200).json({ err: err })
     }
 
 }
@@ -94,7 +94,7 @@ controller.logout=async (req, res)=> {
     }
     catch(err){
         console.log(err);
-        res.status(500).json({message: err})
+        res.status(200).json({message: err})
     }
 }
 
@@ -127,7 +127,7 @@ controller.refreshToken = async (req, res) => {
 
     }
     catch (err) {
-        res.status(500).json(err)
+        res.status(200).json(err)
     }
 
 
@@ -141,10 +141,10 @@ controller.signup = async (req, res) => {
         let userExits = await userModel.findOne({ email: newUserClient.username })
 
         if (emailExits) {
-            res.status(400).json({ message: "email đã tồn tại" })
+            res.status(200).json({ message: "email đã tồn tại" })
         }
         else if(userExits){
-            res.status(400).json({message:'username đã tồn tại'})
+            res.status(200).json({message:'username đã tồn tại'})
         }
         else {
 
@@ -158,7 +158,7 @@ controller.signup = async (req, res) => {
         }
     }
     catch (err) {
-        res.status(500).json(err)
+        res.status(200).json(err)
     }
 }
 

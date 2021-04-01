@@ -8,7 +8,7 @@ controller.addNewPost = async (req, res) => {
         res.status(200).json({code:200, message: "Successfully" })
     }
     catch (err) {
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -18,7 +18,7 @@ controller.updatePost = async ( req, res) => {
         res.status(200).json({code:200, message: "Successfully" })
     }
     catch(err){
-        res.status(500).json({error: err})
+        res.status(200).json({error: err})
     }
 }
 
@@ -28,7 +28,7 @@ controller.getPostList = async (req,res) => {
         res.status(200).json(post_list)
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -38,7 +38,7 @@ controller.deletePost = async (req,res) => {
         res.status(200).json({code:"200", message: "Deleted successfully" })
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -49,7 +49,7 @@ controller.getPost = async (req,res) =>{
         res.status(200).json({code:"200", message: "successfully", post_data })
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -61,7 +61,7 @@ controller.comment= async(req,res)=>{
         res.status(200).json({code:"200", message: "successfully"})
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -84,11 +84,11 @@ controller.getCommentList = async  (req,res) =>{
             res.status(200).json({code:"200", message: "successfully", comment_list})
         }
         else{
-            res.status(404).json({code:"404", message: "No data or end of list data entry"})
+            res.status(200).json({code:"404", message: "No data or end of list data entry"})
         }
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 

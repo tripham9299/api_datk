@@ -10,7 +10,7 @@ controller.addNewRoom = async (req,res) => {
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 
 		if(checkUserMaster.role!="master"){
-			res.status(404).json({code:404,message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:404,message: "The account is not allowed to perform this action" })
 		}
 		else{
 
@@ -42,7 +42,7 @@ controller.addNewRoom = async (req,res) => {
 	}
 	catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -52,7 +52,7 @@ controller.updateRoom = async(req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(404).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({message: "The account is not allowed to perform this action" })
 		}
 		else{
 			if(req.file){
@@ -83,7 +83,7 @@ controller.updateRoom = async(req,res) =>{
 	}
 	catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -92,7 +92,7 @@ controller.deleteRoom = async (req, res) => {
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(404).json({code:404,message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:404,message: "The account is not allowed to perform this action" })
 		}
 		else{
 			let deleteRoom = await roomModel.remove({_id: req.body.room_id})
@@ -102,7 +102,7 @@ controller.deleteRoom = async (req, res) => {
 	}
 	catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -115,7 +115,7 @@ controller.getRoomInfor = async (req, res) =>{
 	}
 	catch (err) {
         console.log(err);
-        res.status(500).json({ error: err })
+        res.status(200).json({ error: err })
     }
 }
 
@@ -123,7 +123,7 @@ controller.getRoomList =async (req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(404).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({message: "The account is not allowed to perform this action" })
 		}
 		else{
 	        let index = req.body.index
@@ -142,13 +142,13 @@ controller.getRoomList =async (req,res) =>{
 	            res.status(200).json({code:"200", message: "successfully", room_list})
 	        }
 	        else{
-	            res.status(404).json({code:"404", message: "No data or end of list data entry"})
+	            res.status(200).json({code:"404", message: "No data or end of list data entry"})
 	        }
 		}
 
     }
     catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -160,11 +160,11 @@ controller.rent = async(req,res) =>{
 			res.status(200).json({code:"200", message: "successfully"})
 		}
 		else{
-			res.status(404).json({code:"404", message: "No data"})
+			res.status(200).json({code:"404", message: "No data"})
 		}
 	}
 	catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -176,11 +176,11 @@ controller.cancelRent = async(req,res) =>{
 			res.status(200).json({code:"200", message: "Canceled successfully"})
 		}
 		else{
-			res.status(404).json({code:"404", message: "No data"})
+			res.status(200).json({code:"404", message: "No data"})
 		}
 	}
 	catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -188,7 +188,7 @@ controller.addToRoom = async(req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(404).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({message: "The account is not allowed to perform this action" })
 		}
 		else{
 			if(req.body.room_id && req.body.user_id){
@@ -197,12 +197,12 @@ controller.addToRoom = async(req,res) =>{
 				res.status(200).json({code:"200", message: "successfully"})
 			}
 			else{
-				res.status(404).json({code:"404", message: "No data"})
+				res.status(200).json({code:"404", message: "No data"})
 			}
 		}
 	}
 	catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -213,11 +213,11 @@ controller.getRoomBill = async (req,res) =>{
 			res.status(200).json({code:"200", message: "successfully",getRoomBill})
 		}
 		else{
-			res.status(404).json({code:"404", message: "No data"})
+			res.status(200).json({code:"404", message: "No data"})
 		}
 	}
 	catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
@@ -228,11 +228,11 @@ controller.getBill = async (req,res) =>{
 			res.status(200).json({code:"200", message: "successfully",getBill})
 		}
 		else{
-			res.status(404).json({code:"404", message: "No data"})
+			res.status(200).json({code:"404", message: "No data"})
 		}
 	}
 	catch(err){
-         res.status(500).json({error: err})
+         res.status(200).json({error: err})
     }
 }
 
