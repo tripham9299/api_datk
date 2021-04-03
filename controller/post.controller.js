@@ -5,7 +5,7 @@ let controller = {}
 controller.addNewPost = async (req, res) => {
     try {
         let newPost = await postModel.create({user:req.user.id, content: req.body.content})
-        res.status(200).json({code:200, message: "Successfully" })
+        res.status(200).json({code:"1000", message: "OK" })
     }
     catch (err) {
         res.status(200).json({ error: err })
@@ -15,7 +15,7 @@ controller.addNewPost = async (req, res) => {
 controller.updatePost = async ( req, res) => {
     try{
         let updatePost = await postModel.findOneAndUpdate({ _id:req.body.post_id },{ content: req.body.content })
-        res.status(200).json({code:200, message: "Successfully" })
+        res.status(200).json({code:"1000", message: "OK" })
     }
     catch(err){
         res.status(200).json({error: err})
@@ -35,7 +35,7 @@ controller.getPostList = async (req,res) => {
 controller.deletePost = async (req,res) => {
     try{
         let deletePost = await postModel.remove({_id:req.body.post_id})
-        res.status(200).json({code:"200", message: "Deleted successfully" })
+        res.status(200).json({code:"1000", message: "OK" })
     }
     catch(err){
          res.status(200).json({error: err})
@@ -46,7 +46,7 @@ controller.getPost = async (req,res) =>{
     try{
         let postId= req.query.post_id
         let post_data = await postModel.findOne({_id: postId })
-        res.status(200).json({code:"200", message: "successfully", post_data })
+        res.status(200).json({code:"1000", message: "OK", post_data })
     }
     catch(err){
          res.status(200).json({error: err})
@@ -58,7 +58,7 @@ controller.comment= async(req,res)=>{
         let post_id= req.body.post_id
         let comment = req.body.comment
         let newComment= await commentModel.create({user: req.user.id, post: post_id,  content : comment})
-        res.status(200).json({code:"200", message: "successfully"})
+        res.status(200).json({code:"1000", message: "OK"})
     }
     catch(err){
          res.status(200).json({error: err})
@@ -81,10 +81,10 @@ controller.getCommentList = async  (req,res) =>{
             for( let i = 1; i<=count; i++){
                 comment_list.push(getCommentList[getCommentList.length-index-i])
             }
-            res.status(200).json({code:"200", message: "successfully", comment_list})
+            res.status(200).json({code:"1000", message: "OK", comment_list})
         }
         else{
-            res.status(200).json({code:"404", message: "No data or end of list data entry"})
+            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
         }
     }
     catch(err){

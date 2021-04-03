@@ -21,7 +21,7 @@ controller.login = async (req, res) => {
             let user = req.body;
             const checkUser = await userModel.findOne({ username: user.username }).lean();
             if (!checkUser) res.status(200).json({
-                code:401,
+                code:"401",
                 message: "Username or password is incorrect"
             })
 
@@ -29,12 +29,12 @@ controller.login = async (req, res) => {
                 const checkPass = await bcrypt.compare(user.password, checkUser.password)
                 delete checkUser.password;
                 if (!checkPass) res.status(200).json({
-                    code:401,
+                    code:"401",
                     message: "Username or password is incorrect"
                 })
 
                 else if (checkUser.isBlock) res.status(200).json({
-                    code:401,
+                    code:"401",
                     message: "The account has been locked"
                 })
 
@@ -63,8 +63,8 @@ controller.login = async (req, res) => {
 
 
                     return res.status(200).json({
-                        code:200,
-                        message: "login success",
+                        code:"1000",
+                        message: "OK",
                         user: {
                             user_id:checkUser._id,
                             role:checkUser.role,
@@ -89,7 +89,7 @@ controller.logout=async (req, res)=> {
 
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
-        res.json({code:200,message: "logout success"})
+        res.json({code:"1000",message: "OK"})
 
     }
     catch(err){
@@ -120,7 +120,8 @@ controller.refreshToken = async (req, res) => {
         })
 
         res.status(200).json({
-            message: "success",
+            code:"1000",
+            message: "OK",
             access_token: accessToken
         })
 
@@ -141,10 +142,10 @@ controller.signup = async (req, res) => {
         let userExits = await userModel.findOne({ email: newUserClient.username })
 
         if (emailExits) {
-            res.status(200).json({ message: "email đã tồn tại" })
+            res.status(200).json({code:"9996", message: "User exited" })
         }
         else if(userExits){
-            res.status(200).json({message:'username đã tồn tại'})
+            res.status(200).json({code:"9996", message: "User exited" })
         }
         else {
 
@@ -154,7 +155,7 @@ controller.signup = async (req, res) => {
             newUser.password = await bcrypt.hash(newUserClient.password, salt)
             newUser = await newUser.save();
 
-            res.status(200).json({ code:200, message: "Đăng ký thành công" })
+            res.status(200).json({ code:"1000", message: "OK" })
         }
     }
     catch (err) {

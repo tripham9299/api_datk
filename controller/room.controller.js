@@ -10,7 +10,7 @@ controller.addNewRoom = async (req,res) => {
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 
 		if(checkUserMaster.role!="master"){
-			res.status(200).json({code:404,message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:"1009",message: "Not access." })
 		}
 		else{
 
@@ -32,11 +32,11 @@ controller.addNewRoom = async (req,res) => {
 	                };
 	            let result = await streamUpload(req);
 	            let newRoom = await roomModel.create({userMaster: req.user.id, address: req.body.address, price:req.body.price, image:result.secure_url})
-	            res.status(200).json({code:200,message: 'Successfully added new room'})
+	            res.status(200).json({code:"1000",message: 'OK'})
         	}
 	        else{
 				let newRoom = await roomModel.create({userMaster: req.user.id, address: req.body.address, price:req.body.price})
-	            res.status(200).json({code:200,message: 'Successfully added new room'})
+	            res.status(200).json({code:"1000",message: 'OK'})
 	        }
 		}
 	}
@@ -52,7 +52,7 @@ controller.updateRoom = async(req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(200).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
 			if(req.file){
@@ -73,11 +73,11 @@ controller.updateRoom = async(req,res) =>{
 	                };
 	            let result = await streamUpload(req);
 	            let updateRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ address: req.body.address, price:req.body.price, image:result.secure_url})
-	            res.status(200).json({code:200,message: 'Successfully update room'})
+	            res.status(200).json({code:"1000",message: 'OK'})
         	}
 	        else{
 				let updateRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ address: req.body.address, price:req.body.price})
-	            res.status(200).json({code:200,message: 'Successfully update room'})
+	            res.status(200).json({code:"1000",message: 'OK'})
 	        }
 		}
 	}
@@ -92,11 +92,11 @@ controller.deleteRoom = async (req, res) => {
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(200).json({code:404,message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
 			let deleteRoom = await roomModel.remove({_id: req.body.room_id})
-			res.status(200).json({code:200,message: 'Deleted successfully'})
+			res.status(200).json({code:"1000",message: 'OK'})
 		}
 
 	}
@@ -123,7 +123,7 @@ controller.getRoomList =async (req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(200).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
 	        let index = req.body.index
@@ -139,10 +139,10 @@ controller.getRoomList =async (req,res) =>{
 	            for( let i = 1; i<=count; i++){
 	                room_list.push(getRoomList[getRoomList.length-index-i])
 	            }
-	            res.status(200).json({code:"200", message: "successfully", room_list})
+	            res.status(200).json({code:"1000", message: "OK", room_list})
 	        }
 	        else{
-	            res.status(200).json({code:"404", message: "No data or end of list data entry"})
+	            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
 	        }
 		}
 
@@ -157,10 +157,10 @@ controller.rent = async(req,res) =>{
 		if(req.body.room_id){
 			let rentBill = await billModel.create({userRent: req.user.id, roomRent: req.body.room_id, status:"unpaid"})
 			let rentRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ userRent: req.user.id })
-			res.status(200).json({code:"200", message: "successfully"})
+			res.status(200).json({code:"1000", message: "OK"})
 		}
 		else{
-			res.status(200).json({code:"404", message: "No data"})
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 		}
 	}
 	catch(err){
@@ -173,10 +173,10 @@ controller.cancelRent = async(req,res) =>{
 		if(req.body.room_id){
 			let cancelRent = await billModel.findOneAndUpdate({userRent:req.user.id, roomRent:req.body.room_id},{status:"cancel"})
 			let rentRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ userRent: null })
-			res.status(200).json({code:"200", message: "Canceled successfully"})
+			res.status(200).json({code:"1000", message: "OK"})
 		}
 		else{
-			res.status(200).json({code:"404", message: "No data"})
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 		}
 	}
 	catch(err){
@@ -188,16 +188,16 @@ controller.addToRoom = async(req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
 		if(checkUserMaster.role!="master"){
-			res.status(200).json({message: "The account is not allowed to perform this action" })
+			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
 			if(req.body.room_id && req.body.user_id){
 				let addToRoomBill = await billModel.create({userRent: req.user.id, roomRent: req.body.room_id, status:"unpaid"})
 				let addToRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{userRent: req.body.user_id})
-				res.status(200).json({code:"200", message: "successfully"})
+				res.status(200).json({code:"1000", message: "OK"})
 			}
 			else{
-				res.status(200).json({code:"404", message: "No data"})
+				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 			}
 		}
 	}
@@ -210,10 +210,10 @@ controller.getRoomBill = async (req,res) =>{
 	try{
 		if(req.body.room_id){
 			let getRoomBill = await billModel.find({roomRent: req.body.room_id})
-			res.status(200).json({code:"200", message: "successfully",getRoomBill})
+			res.status(200).json({code:"1000", message: "OK",getRoomBill})
 		}
 		else{
-			res.status(200).json({code:"404", message: "No data"})
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 		}
 	}
 	catch(err){
@@ -225,10 +225,10 @@ controller.getBill = async (req,res) =>{
 	try{
 		if(req.body.bill_id){
 			let getBill = await billModel.find({_id: req.body.bill_id})
-			res.status(200).json({code:"200", message: "successfully",getBill})
+			res.status(200).json({code:"1000", message: "OK",getBill})
 		}
 		else{
-			res.status(200).json({code:"404", message: "No data"})
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 		}
 	}
 	catch(err){

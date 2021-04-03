@@ -23,7 +23,7 @@ controller.getPersonalInfor = async (req, res) => {
         delete user.role
         delete user.password
 
-        res.json(user);
+        res.status(200).json({code:"1000",message:"OK",user});
     }
     catch (err) {
         console.log(err)
@@ -61,12 +61,12 @@ controller.updatePersonalInfor = async (req, res) => {
             let userUpdate= await userModel.findOneAndUpdate({_id:id},
                 {fullname: req.body.fullname,email:req.body.email,mobile:req.body.mobile,avatar:result.secure_url},
                 {new:true})
-            res.json(userUpdate);
+            res.status(200).json({code:'1000',message:'OK',userUpdate});
         }
         else{
 
             let userUpdate = await userModel.findOneAndUpdate({ _id: id }, req.body, { new: true });
-            res.json(userUpdate);
+            res.status(200).json({code:'1000',message:'OK',userUpdate});
         }
 
     }
@@ -81,7 +81,7 @@ controller.changePass = async(req, res) => {
 
     try {
         if(req.body.new_password!==req.body.retype_password){
-            res.status(200).json({code:403, message: 'incorect retype_password'})
+            res.status(200).json({code:"403", message: 'incorect retype_password'})
         }
         else{
             let currentUser = await userModel.findById(req.user.id)
@@ -92,9 +92,9 @@ controller.changePass = async(req, res) => {
 
             if (checkPass) {
                 await currentUser.updateOne({password: newPass})
-                res.status(200).json({code:200, message: 'successfully'})
+                res.status(200).json({code:"1000", message: 'OK'})
             }
-            else res.status(200).json({code:403, message: 'failure'})
+            else res.status(200).json({code:"403", message: 'failure'})
         }
     }
     catch (err) {
@@ -109,15 +109,12 @@ controller.deleteUserById = async (req, res) => {
     try {
         let checkUserAdmin = await userModel.findOne({_id: req.user.id})
         if(checkUserAdmin.role!="admin"){
-            res.status(200).json({message: "The account is not allowed to perform this action" })
+            res.status(200).json({code:"1009",message: "Not access."})
         }
         else{
             if(req.body.confirm==1){
                 let userDelete = await userModel.findByIdAndDelete(req.body.user_id)
-                 res.status(200).json({code:200,message: 'Deteted successfully'})
-            }
-            else{
-                res.json({code:200,message: 'Cancel'});
+                res.status(200).json({code:"1000",message: 'OK'})
             }
         }
 
@@ -132,7 +129,7 @@ controller.LockUser = async (req, res) => {
         let id = req.params.id;
 
         let userUpdate = await userModel.findOneAndUpdate({ _id: id }, { isBlock: true }, { new: true });
-        res.json(userUpdate);
+        res.status(200).json({code:"1000",message:"OK",userUpdate});
     }
     catch (err) {
         console.log(err);
@@ -145,7 +142,7 @@ controller.unLockUser = async (req, res) => {
         let id = req.params.id;
 
         let userUpdate = await userModel.findOneAndUpdate({ _id: id }, { isBlock: false }, { new: true });
-        res.json(userUpdate);
+        res.status.json({code:'1000',message:'OK',userUpdate});
     }
     catch (err) {
         console.log(err);
