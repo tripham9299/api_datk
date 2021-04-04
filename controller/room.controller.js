@@ -1,6 +1,7 @@
 var roomModel = require('../models/room.model')
 var billModel = require('../models/bill.model')
 var userModel = require('../models/user.model')
+
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 let controller = {}
@@ -122,9 +123,11 @@ controller.getRoomInfor = async (req, res) =>{
 controller.getRoomList =async (req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
+
 		if(checkUserMaster.role!="master"){
 			res.status(200).json({code:"1009",message: "Not access."})
 		}
+
 		else{
 	        let index = req.body.index
 	        var count= req.body.count
@@ -148,60 +151,6 @@ controller.getRoomList =async (req,res) =>{
 
     }
     catch(err){
-         res.status(200).json({error: err})
-    }
-}
-
-controller.rent = async(req,res) =>{
-	try{
-		if(req.body.room_id){
-			let rentBill = await billModel.create({userRent: req.user.id, roomRent: req.body.room_id, status:"unpaid"})
-			let rentRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ userRent: req.user.id })
-			res.status(200).json({code:"1000", message: "OK"})
-		}
-		else{
-			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
-		}
-	}
-	catch(err){
-         res.status(200).json({error: err})
-    }
-}
-
-controller.cancelRent = async(req,res) =>{
-	try{
-		if(req.body.room_id){
-			let cancelRent = await billModel.findOneAndUpdate({userRent:req.user.id, roomRent:req.body.room_id},{status:"cancel"})
-			let rentRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ userRent: null })
-			res.status(200).json({code:"1000", message: "OK"})
-		}
-		else{
-			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
-		}
-	}
-	catch(err){
-         res.status(200).json({error: err})
-    }
-}
-
-controller.addToRoom = async(req,res) =>{
-	try{
-		let checkUserMaster = await userModel.findOne({_id: req.user.id})
-		if(checkUserMaster.role!="master"){
-			res.status(200).json({code:"1009",message: "Not access."})
-		}
-		else{
-			if(req.body.room_id && req.body.user_id){
-				let addToRoomBill = await billModel.create({userRent: req.user.id, roomRent: req.body.room_id, status:"unpaid"})
-				let addToRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{userRent: req.body.user_id})
-				res.status(200).json({code:"1000", message: "OK"})
-			}
-			else{
-				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
-			}
-		}
-	}
-	catch(err){
          res.status(200).json({error: err})
     }
 }
@@ -235,7 +184,5 @@ controller.getBill = async (req,res) =>{
          res.status(200).json({error: err})
     }
 }
-
-
 
 module.exports = controller

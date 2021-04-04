@@ -14,9 +14,6 @@ cloudinary.config({
 });
 
 
-// var test = require('./test.js')
-
-
 var userRouters = require('./routes/user.route')
 
 var authRouters = require('./routes/auth.route')
@@ -25,11 +22,12 @@ var postRouters = require('./routes/post.route')
 
 var roomRoutes = require('./routes/room.route')
 
+var tenantRoutes = require('./routes/tenant.route')
+
 var authMiddleware = require('./middleware/auth.middleware')
 
 
-
-
+// -----------mongoose connect
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 mongoose.connection.on('error', err => {
@@ -42,8 +40,7 @@ mongoose.connection.once('open', () => {
     console.log(`Connected to MongoDB:`);
 });
 
-
-
+// -----------end mongoose connect
 
 
 var app = express()
@@ -77,9 +74,14 @@ app.get('/', function (req, res) {
 })
 
 app.use('/auth', authRouters);
+
 app.use('/user', userRouters);
+
 app.use('/post', postRouters);
+
 app.use('/room',roomRoutes);
+
+app.use('/tenant',tenantRoutes);
 
 
 

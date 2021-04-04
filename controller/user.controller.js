@@ -1,4 +1,5 @@
 var userModel = require('../models/user.model')
+var notificationModel = require('../models/notification.model')
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
 const bcrypt = require('bcryptjs')
@@ -143,6 +144,17 @@ controller.unLockUser = async (req, res) => {
 
         let userUpdate = await userModel.findOneAndUpdate({ _id: id }, { isBlock: false }, { new: true });
         res.status.json({code:'1000',message:'OK',userUpdate});
+    }
+    catch (err) {
+        console.log(err);
+        res.status(200).json({ error: err })
+    }
+}
+
+controller.getNotification = async (req,res) =>{
+    try{
+        let notification_list = await notificationModel.find({user:req.user.id})
+        res.status(200).json({code:'1000', message:'OK', notification_list })
     }
     catch (err) {
         console.log(err);

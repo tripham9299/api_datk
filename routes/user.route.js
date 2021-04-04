@@ -8,17 +8,19 @@ const fileUpload = multer();
 
 
 router.get('/', userController.getListUser)
+
 router.post('/personal_infor', authMiddleware.isAuth, userController.getPersonalInfor)
+
 router.post('/personal_infor_update',
 	fileUpload.single('avatar'),
 	authMiddleware.isAuth,
 	userController.updatePersonalInfor)
+
 router.post('/password/update',authMiddleware.isAuth, userController.changePass)
+
 router.post('/account/delete',authMiddleware.isAuth, userController.deleteUserById)
-// router.post('/', userController.addUser)
-// router.patch('/:id', userController.updateUserAdmin)
-// router.post('/lock/:id', userController.LockUser)
-// router.post('/unlock/:id', userController.unLockUser)
+
+router.post('/getNotification',authMiddleware.isAuth, userController.getNotification)
 
 
 module.exports = router;
