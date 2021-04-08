@@ -14,6 +14,10 @@ router.post('/addToRoom',authMiddleware.isAuth, tenantController.addToRoom)
 
 router.post('/removeFromRoom',authMiddleware.isAuth, tenantController.removeFromRoom)
 
+router.post('/getTenantTransfer',authMiddleware.isAuth,tenantController.getTenantTransfer)
+
+router.post('/tenantTransfer',authMiddleware.isAuth,tenantController.tenantTransfer)
+
 router.post('/receiveTenant',authMiddleware.isAuth, tenantController.receiveTenant)
 
 
