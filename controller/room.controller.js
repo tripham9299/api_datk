@@ -173,7 +173,7 @@ controller.getRoomBill = async (req,res) =>{
 controller.getBill = async (req,res) =>{
 	try{
 		if(req.body.bill_id){
-			let billData = await billModel.find({_id: req.body.bill_id})
+			let billData = await billModel.findOne({_id: req.body.bill_id})
 			res.status(200).json({code:"1000", message: "OK", billData})
 		}
 		else{
