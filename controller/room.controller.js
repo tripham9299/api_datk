@@ -158,8 +158,8 @@ controller.getRoomList =async (req,res) =>{
 controller.getRoomBill = async (req,res) =>{
 	try{
 		if(req.body.room_id){
-			let getRoomBill = await billModel.find({roomRent: req.body.room_id})
-			res.status(200).json({code:"1000", message: "OK",getRoomBill})
+			let billData = await billModel.find({roomRent: req.body.room_id})
+			res.status(200).json({code:"1000", message: "OK", billData})
 		}
 		else{
 			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
@@ -173,8 +173,8 @@ controller.getRoomBill = async (req,res) =>{
 controller.getBill = async (req,res) =>{
 	try{
 		if(req.body.bill_id){
-			let getBill = await billModel.find({_id: req.body.bill_id})
-			res.status(200).json({code:"1000", message: "OK",getBill})
+			let billData = await billModel.find({_id: req.body.bill_id})
+			res.status(200).json({code:"1000", message: "OK", billData})
 		}
 		else{
 			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
