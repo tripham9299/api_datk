@@ -18,7 +18,7 @@ controller.login = async (req, res) => {
 
     try {
 
-            let user = req.body;
+            let user = req.query;
             const checkUser = await userModel.findOne({ username: user.username }).lean();
             if (!checkUser) res.status(200).json({
                 code:"401",
@@ -103,7 +103,7 @@ controller.refreshToken = async (req, res) => {
 
     try {
 
-        const refreshTokenClient = req.body.refreshToken || req.cookies.refreshToken || req.cookies.refreshToken || req.headers["x-refresh-token"] || req.headers["refreshToken"];
+        const refreshTokenClient = req.query.refreshToken || req.cookies.refreshToken || req.cookies.refreshToken || req.headers["x-refresh-token"] || req.headers["refreshToken"];
         const userDecode = await jwtMethod.verifyToken(refreshTokenClient, refreshSecretKey);
 
         const payloadUser = {
@@ -136,7 +136,7 @@ controller.refreshToken = async (req, res) => {
 
 controller.signup = async (req, res) => {
     try{
-        const newUserClient = req.body;
+        const newUserClient = req.query;
 
         let emailExits = await userModel.findOne({ email: newUserClient.email })
         let userExits = await userModel.findOne({ email: newUserClient.username })

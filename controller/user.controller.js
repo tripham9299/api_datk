@@ -38,9 +38,9 @@ controller.updatePersonalInfor = async (req, res) => {
     try {
         let id = req.user.id;
 
-        if (req.body.isBlock) delete req.body.isBlock
-        if (req.body.role) delete req.body.role
-        if (req.body.password) delete req.body.password
+        if (req.query.isBlock) delete req.query.isBlock
+        if (req.query.role) delete req.query.role
+        if (req.query.password) delete req.query.password
 
         if(req.file){
             let streamUpload = (req) => {
@@ -60,13 +60,13 @@ controller.updatePersonalInfor = async (req, res) => {
                 };
             let result = await streamUpload(req);
             let userUpdate= await userModel.findOneAndUpdate({_id:id},
-                {fullname: req.body.fullname,email:req.body.email,mobile:req.body.mobile,avatar:result.secure_url},
+                {fullname: req.query.fullname,email:req.query.email,mobile:req.query.mobile,avatar:result.secure_url},
                 {new:true})
             res.status(200).json({code:'1000',message:'OK',userUpdate});
         }
         else{
 
-            let userUpdate = await userModel.findOneAndUpdate({ _id: id }, req.body, { new: true });
+            let userUpdate = await userModel.findOneAndUpdate({ _id: id }, req.query, { new: true });
             res.status(200).json({code:'1000',message:'OK',userUpdate});
         }
 
@@ -81,15 +81,15 @@ controller.updatePersonalInfor = async (req, res) => {
 controller.changePass = async(req, res) => {
 
     try {
-        if(req.body.new_password!==req.body.retype_password){
+        if(req.query.new_password!==req.query.retype_password){
             res.status(200).json({code:"403", message: 'incorect retype_password'})
         }
         else{
             let currentUser = await userModel.findById(req.user.id)
             const salt = await bcrypt.genSalt(10)
-            const oldPass = req.body.old_password
+            const oldPass = req.query.old_password
             let checkPass = await bcrypt.compare(oldPass, currentUser.password)
-            let newPass = await bcrypt.hash(req.body.new_password, salt)
+            let newPass = await bcrypt.hash(req.query.new_password, salt)
 
             if (checkPass) {
                 await currentUser.updateOne({password: newPass})
@@ -113,8 +113,8 @@ controller.deleteUserById = async (req, res) => {
             res.status(200).json({code:"1009",message: "Not access."})
         }
         else{
-            if(req.body.confirm==1){
-                let userDelete = await userModel.findByIdAndDelete(req.body.user_id)
+            if(req.query.confirm==1){
+                let userDelete = await userModel.findByIdAndDelete(req.query.user_id)
                 res.status(200).json({code:"1000",message: 'OK'})
             }
         }

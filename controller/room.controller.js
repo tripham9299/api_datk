@@ -32,11 +32,11 @@ controller.addNewRoom = async (req,res) => {
 	                    });
 	                };
 	            let result = await streamUpload(req);
-	            let newRoom = await roomModel.create({userMaster: req.user.id, address: req.body.address, price:req.body.price, image:result.secure_url})
+	            let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price, image:result.secure_url})
 	            res.status(200).json({code:"1000",message: 'OK'})
         	}
 	        else{
-				let newRoom = await roomModel.create({userMaster: req.user.id, address: req.body.address, price:req.body.price})
+				let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price})
 	            res.status(200).json({code:"1000",message: 'OK'})
 	        }
 		}
@@ -73,11 +73,11 @@ controller.updateRoom = async(req,res) =>{
 	                    });
 	                };
 	            let result = await streamUpload(req);
-	            let updateRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ address: req.body.address, price:req.body.price, image:result.secure_url})
+	            let updateRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ address: req.query.address, price:req.query.price, image:result.secure_url})
 	            res.status(200).json({code:"1000",message: 'OK'})
         	}
 	        else{
-				let updateRoom = await roomModel.findOneAndUpdate({_id:req.body.room_id},{ address: req.body.address, price:req.body.price})
+				let updateRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ address: req.query.address, price:req.query.price})
 	            res.status(200).json({code:"1000",message: 'OK'})
 	        }
 		}
@@ -96,7 +96,7 @@ controller.deleteRoom = async (req, res) => {
 			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
-			let deleteRoom = await roomModel.remove({_id: req.body.room_id})
+			let deleteRoom = await roomModel.remove({_id: req.query.room_id})
 			res.status(200).json({code:"1000",message: 'OK'})
 		}
 
@@ -129,8 +129,8 @@ controller.getRoomList =async (req,res) =>{
 		}
 
 		else{
-	        let index = req.body.index
-	        var count= req.body.count
+	        let index = req.query.index
+	        var count= req.query.count
 	        var room_list = []
 	        let getRoomList = await roomModel.find({ userMaster: req.user.id})
 
@@ -157,8 +157,8 @@ controller.getRoomList =async (req,res) =>{
 
 controller.getRoomBill = async (req,res) =>{
 	try{
-		if(req.body.room_id){
-			let billData = await billModel.find({roomRent: req.body.room_id})
+		if(req.query.room_id){
+			let billData = await billModel.find({roomRent: req.query.room_id})
 			res.status(200).json({code:"1000", message: "OK", billData})
 		}
 		else{
@@ -172,8 +172,8 @@ controller.getRoomBill = async (req,res) =>{
 
 controller.getBill = async (req,res) =>{
 	try{
-		if(req.body.bill_id){
-			let billData = await billModel.findOne({_id: req.body.bill_id})
+		if(req.query.bill_id){
+			let billData = await billModel.findOne({_id: req.query.bill_id})
 			res.status(200).json({code:"1000", message: "OK", billData})
 		}
 		else{

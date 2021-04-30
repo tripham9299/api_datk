@@ -6,10 +6,8 @@ let isAuth = async (req, res, next) => {
 
 	const tokenClient = req.body.token || req.headers["x-access-token"] ||
 	req.headers["user-token"] || req.headers["token"] ||
-	 req.headers.authorization || req.cookies['access_token'];
+	 req.headers.authorization || req.cookies['access_token'] || req.query.token;
 
-
-	console.log(tokenClient)
 	if (!tokenClient) return res.status(200).json({
 		message: 'không có token '
 	})
