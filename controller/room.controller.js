@@ -14,8 +14,14 @@ controller.addNewRoom = async (req,res) => {
 			res.status(200).json({code:"1009",message: "Not access." })
 		}
 		else{
-
-			if(req.file){
+			if(req.query.address === "" || req.query.address === undefined || req.query.address === null){
+	            res.status(200).json({code:"9996", message: "Address is required" })
+	        }
+            else if(req.query.price === "" || req.query.price === undefined || req.query.price === null){
+            	res.status(200).json({code:"9996", message: "Price is required" })
+            }
+            else{
+            	if(req.file){
 	            let streamUpload = (req) => {
 	                return new Promise((resolve, reject) => {
 	                    let stream = cloudinary.uploader.upload_stream(
@@ -34,11 +40,12 @@ controller.addNewRoom = async (req,res) => {
 	            let result = await streamUpload(req);
 	            let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price, image:result.secure_url})
 	            res.status(200).json({code:"1000",message: 'OK'})
-        	}
-	        else{
-				let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price})
-	            res.status(200).json({code:"1000",message: 'OK'})
-	        }
+	        	}
+		        else{
+					let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price})
+		            res.status(200).json({code:"1000",message: 'OK'})
+		        }
+            }
 		}
 	}
 	catch (err) {
@@ -181,6 +188,35 @@ controller.getBill = async (req,res) =>{
 		}
 	}
 	catch(err){
+         res.status(200).json({error: err})
+    }
+}
+
+controller.searchRoom =async (req,res) =>{
+	try{
+
+        let index = req.query.index
+        var count= req.query.count
+        var room_list = []
+        let getRoomList = await roomModel.find()
+
+        let searchResult = getRoomList.filter(item => item.address !== undefined && item.address.toLowerCase().indexOf(req.query.keyword) !== -1);
+
+        if( count + index > searchResult.length ){
+            count= searchResult.length-index
+        }
+
+        if( index < searchResult.length ){
+            for( let i = 1; i<=count; i++){
+                room_list.push(searchResult[searchResult.length-index-i])
+            }
+            res.status(200).json({code:"1000", message: "OK", room_list})
+        }
+        else{
+            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+        }
+    }
+    catch(err){
          res.status(200).json({error: err})
     }
 }

@@ -26,4 +26,6 @@ router.post('/getRoomBill',authMiddleware.isAuth, roomController.getRoomBill)
 
 router.post('/getBill',authMiddleware.isAuth, roomController.getBill)
 
+router.get('/search', roomController.searchRoom)
+
 module.exports = router;

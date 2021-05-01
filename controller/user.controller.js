@@ -162,5 +162,40 @@ controller.getNotification = async (req,res) =>{
     }
 }
 
+controller.searchUser =async (req,res) =>{
+    try{
+
+        let checkUserAdmin = await userModel.findOne({_id: req.user.id})
+        if(checkUserAdmin.role!="admin"){
+            res.status(200).json({code:"1009",message: "Not access."})
+        }
+        else{
+            let index = req.query.index
+            var count= req.query.count
+            var user_list = []
+            let getUserList = await userModel.find()
+            console.log(getUserList)
+            let searchResult = getUserList.filter(item => item.fullname !== undefined && item.fullname.toLowerCase().indexOf(req.query.keyword) !== -1);
+            console.log(searchResult)
+            if( count + index > searchResult.length ){
+                count= searchResult.length-index
+            }
+
+            if( index < searchResult.length ){
+                for( let i = 1; i<=count; i++){
+                    user_list.push(searchResult[searchResult.length-index-i])
+                }
+                res.status(200).json({code:"1000", message: "OK", user_list})
+            }
+            else{
+                res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+            }
+        }
+    }
+    catch(err){
+         res.status(200).json({error: err.message})
+    }
+}
+
 
 module.exports = controller

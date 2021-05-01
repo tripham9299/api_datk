@@ -147,8 +147,13 @@ controller.signup = async (req, res) => {
         else if(userExits){
             res.status(200).json({code:"9996", message: "User exited" })
         }
+        else if(newUserClient.username === "" || newUserClien.username === undefined || newUserClient.username === null){
+            res.status(200).json({code:"9996", message: "Username is required" })
+        }
+        else if(newUserClient.fullname === "" || newUserClien.fullname === undefined || newUserClient.fullname === null){
+            res.status(200).json({code:"9996", message: "Fullname is required" })
+        }
         else {
-
             let newUser = new userModel(newUserClient);
 
             const salt = await bcrypt.genSalt(10)

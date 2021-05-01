@@ -11,7 +11,8 @@ var userSchema = new Schema({
 		default: null
 	},
 	role: {
-		type:String
+		type:String,
+		default: 'guest'
 	},
 	isBlock: {
 		type: Boolean,

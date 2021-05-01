@@ -22,5 +22,7 @@ router.post('/account/delete',authMiddleware.isAuth, userController.deleteUserBy
 
 router.post('/getNotification',authMiddleware.isAuth, userController.getNotification)
 
+router.get('/search',authMiddleware.isAuth, userController.searchUser)
+
 
 module.exports = router;
