@@ -50,7 +50,7 @@ controller.addNewRoom = async (req,res) => {
 	}
 	catch (err) {
         console.log(err);
-        res.status(200).json({ error: err })
+        res.status(200).json({ error: err.message })
     }
 }
 
@@ -91,7 +91,7 @@ controller.updateRoom = async(req,res) =>{
 	}
 	catch (err) {
         console.log(err);
-        res.status(200).json({ error: err })
+        res.status(200).json({ error: err.message })
     }
 }
 
@@ -110,7 +110,7 @@ controller.deleteRoom = async (req, res) => {
 	}
 	catch (err) {
         console.log(err);
-        res.status(200).json({ error: err })
+        res.status(200).json({ error: err.message })
     }
 }
 
@@ -123,7 +123,7 @@ controller.getRoomInfor = async (req, res) =>{
 	}
 	catch (err) {
         console.log(err);
-        res.status(200).json({ error: err })
+        res.status(200).json({ error: err.message })
     }
 }
 
@@ -158,7 +158,7 @@ controller.getRoomList =async (req,res) =>{
 
     }
     catch(err){
-         res.status(200).json({error: err})
+         res.status(200).json({error: err.message})
     }
 }
 
@@ -173,7 +173,7 @@ controller.getRoomBill = async (req,res) =>{
 		}
 	}
 	catch(err){
-         res.status(200).json({error: err})
+         res.status(200).json({error: err.message})
     }
 }
 
@@ -188,7 +188,7 @@ controller.getBill = async (req,res) =>{
 		}
 	}
 	catch(err){
-         res.status(200).json({error: err})
+         res.status(200).json({error: err.message})
     }
 }
 
@@ -217,7 +217,22 @@ controller.searchRoom =async (req,res) =>{
         }
     }
     catch(err){
-         res.status(200).json({error: err})
+        res.status(200).json({error: err.message})
+    }
+}
+
+controller.statistic = async (req, res) =>{
+	try{
+		let checkUserMaster = await userModel.findOne({_id: req.user.id})
+
+		if(checkUserMaster.role!="master"){
+			res.status(200).json({code:"1009",message: "Not access."})
+		}
+		else{
+		}
+	}
+	catch(err){
+        res.status(200).json({error: err.message})
     }
 }
 

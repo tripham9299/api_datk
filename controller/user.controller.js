@@ -173,8 +173,10 @@ controller.searchUser =async (req,res) =>{
             let index = req.query.index
             var count= req.query.count
             var user_list = []
-            let getUserList = await userModel.find()
-            console.log(getUserList)
+            let getUserList = await userModel.find().lean()
+            for( let i = 0; i < getUserList.length; i++){
+                delete getUserList[i].password
+            }
             let searchResult = getUserList.filter(item => item.fullname !== undefined && item.fullname.toLowerCase().indexOf(req.query.keyword) !== -1);
             console.log(searchResult)
             if( count + index > searchResult.length ){
