@@ -136,8 +136,8 @@ controller.getRoomList =async (req,res) =>{
 		}
 
 		else{
-	        let index = req.query.index
-	        var count= req.query.count
+	        let index = isNaN(parseInt( req.query.index)) ? 0 : parseInt( req.query.index)
+	        var count= isNaN(parseInt( req.query.count)) ? 0 :  parseInt( req.query.count)
 	        var room_list = []
 	        let getRoomList = await roomModel.find({ userMaster: req.user.id})
 
@@ -195,8 +195,8 @@ controller.getBill = async (req,res) =>{
 controller.searchRoom =async (req,res) =>{
 	try{
 
-        let index = req.query.index
-        var count= req.query.count
+        let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
+        var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
         var room_list = []
         let getRoomList = await roomModel.find()
 

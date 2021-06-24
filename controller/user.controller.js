@@ -113,9 +113,15 @@ controller.deleteUserById = async (req, res) => {
             res.status(200).json({code:"1009",message: "Not access."})
         }
         else{
-            if(req.query.confirm==1){
-                let userDelete = await userModel.findByIdAndDelete(req.query.user_id)
-                res.status(200).json({code:"1000",message: 'OK'})
+            if(isNaN(parseInt(req.query.confirm))){
+                res.status(200).json({code:"403", message: 'failure'})
+            } else {
+                if(req.query.confirm == 1){
+                    let userDelete = await userModel.findByIdAndDelete(req.query.user_id)
+                    res.status(200).json({code:"1000",message: 'OK'})
+                } else{
+                    res.status(200).json({code:"1000",message: 'Cancel'})
+                }
             }
         }
 
@@ -170,8 +176,8 @@ controller.searchUser =async (req,res) =>{
             res.status(200).json({code:"1009",message: "Not access."})
         }
         else{
-            let index = req.query.index
-            var count= req.query.count
+            let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
+            var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
             var user_list = []
             let getUserList = await userModel.find().lean()
             for( let i = 0; i < getUserList.length; i++){

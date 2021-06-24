@@ -25,7 +25,7 @@ controller.updatePost = async ( req, res) => {
 controller.getPostList = async (req,res) => {
     try{
         let post_list = await postModel.find({user: req.user.id}).populate('user')
-        res.status(200).json(post_list)
+        res.status(200).json({code:"1000", message: "OK",post_list})
     }
     catch(err){
          res.status(200).json({error: err})
@@ -68,8 +68,8 @@ controller.comment= async(req,res)=>{
 controller.getCommentList = async  (req,res) =>{
      try{
         let post_id = req.query.post_id
-        let index = req.query.index
-        var count= req.query.count
+        let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
+        var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
         var comment_list = []
         let getCommentList = await commentModel.find({ post: post_id})
 

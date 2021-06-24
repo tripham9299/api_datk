@@ -135,23 +135,27 @@ controller.receiveTenant = async (req,res) =>{
 			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
-			if(req.query.confirm == 1){
-				if(req.query.host_id && req.query.guest_id && req.query.room_id){
-					let acceptTransferRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent:req.query.guest_id})
-					let newBill = await billModel.create({userRent: req.query.guest_id, roomRent: req.query.room_id, status:"unpaid"})
-					res.status(200).json({code:'1000',message:'OK'})
+			if(req.query.confirm !== null && req.query.confirm !== undefined){
+				if(parseInt(req.query.confirm) == 1){
+					if(req.query.host_id && req.query.guest_id && req.query.room_id){
+						let acceptTransferRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent:req.query.guest_id})
+						let newBill = await billModel.create({userRent: req.query.guest_id, roomRent: req.query.room_id, status:"unpaid"})
+						res.status(200).json({code:'1000',message:'OK'})
+					}
+					else{
+						res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+					}
 				}
 				else{
-					res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+					if(req.query.host_id && req.query.guest_id){
+						let refuseTransfer = await tranferModel.remove({userMaster:req.user.id,userMasterTransfer:req.query.host_id,userGuest:req.query.guest_id})
+					}
+					else{
+						res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+					}
 				}
-			}
-			else{
-				if(req.query.host_id && req.query.guest_id){
-					let refuseTransfer = await tranferModel.remove({userMaster:req.user.id,userMasterTransfer:req.query.host_id,userGuest:req.query.guest_id})
-				}
-				else{
-					res.status(200).json({code:"1004", message: "Parameter value is invalid"})
-				}
+			} else{
+				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 			}
 		}
 	}
