@@ -139,19 +139,25 @@ controller.signup = async (req, res) => {
         const newUserClient = req.query;
 
         let emailExits = await userModel.findOne({ email: newUserClient.email })
-        let userExits = await userModel.findOne({ email: newUserClient.username })
-
-        if (emailExits) {
-            res.status(200).json({code:"9996", message: "User exited" })
-        }
-        else if(userExits){
-            res.status(200).json({code:"9996", message: "User exited" })
-        }
-        else if(newUserClient.username === "" || newUserClien.username === undefined || newUserClient.username === null){
+        let userExits = await userModel.findOne({ username: newUserClient.username })
+    
+        if(newUserClient.username == "" || newUserClient.username == undefined || newUserClient.username == null){
             res.status(200).json({code:"9996", message: "Username is required" })
         }
-        else if(newUserClient.fullname === "" || newUserClien.fullname === undefined || newUserClient.fullname === null){
+        else if(newUserClient.fullname == "" || newUserClient.fullname == undefined || newUserClient.fullname == null){
             res.status(200).json({code:"9996", message: "Fullname is required" })
+        }
+        else if(newUserClient.email == "" || newUserClient.email == undefined || newUserClient.email ==null){
+            res.status(200).json({code:"9996", message: "Email is required" })
+        } 
+        else if(newUserClient.password == "" || newUserClient.password == undefined || newUserClient.password ==null){
+            res.status(200).json({code:"9996", message: "Password is required" })
+        } 
+        else if (emailExits) {
+            res.status(200).json({code:"9996", message: "Email exited" })
+        }
+        else if(userExits){
+            res.status(200).json({code:"9996", message: "Username exited" })
         }
         else {
             let newUser = new userModel(newUserClient);
