@@ -21,16 +21,16 @@ controller.login = async (req, res) => {
             let user = req.query;
             const checkUser = await userModel.findOne({ username: user.username }).lean();
             if (!checkUser) res.status(200).json({
-                code:"401",
-                message: "Username or password is incorrect"
+                code:"9995",
+                message: "User is not validated"
             })
 
             else {
                 const checkPass = await bcrypt.compare(user.password, checkUser.password)
                 delete checkUser.password;
                 if (!checkPass) res.status(200).json({
-                    code:"401",
-                    message: "Username or password is incorrect"
+                    code:"9995",
+                    message: "User is not validated"
                 })
 
                 else if (checkUser.isBlock) res.status(200).json({
@@ -142,22 +142,22 @@ controller.signup = async (req, res) => {
         let userExits = await userModel.findOne({ username: newUserClient.username })
     
         if(newUserClient.username == "" || newUserClient.username == undefined || newUserClient.username == null){
-            res.status(200).json({code:"9996", message: "Username is required" })
+            res.status(200).json({code:"1002", message: "Parameter is not enought" })
         }
         else if(newUserClient.fullname == "" || newUserClient.fullname == undefined || newUserClient.fullname == null){
-            res.status(200).json({code:"9996", message: "Fullname is required" })
+            res.status(200).json({code:"1002", message: "Parameter is not enought" })
         }
         else if(newUserClient.email == "" || newUserClient.email == undefined || newUserClient.email ==null){
-            res.status(200).json({code:"9996", message: "Email is required" })
+            res.status(200).json({code:"1002", message: "Parameter is not enought" })
         } 
         else if(newUserClient.password == "" || newUserClient.password == undefined || newUserClient.password ==null){
-            res.status(200).json({code:"9996", message: "Password is required" })
+            res.status(200).json({code:"1002", message: "Parameter is not enought" })
         } 
         else if (emailExits) {
-            res.status(200).json({code:"9996", message: "Email exited" })
+            res.status(200).json({code:"9996", message: "User exited" })
         }
         else if(userExits){
-            res.status(200).json({code:"9996", message: "Username exited" })
+            res.status(200).json({code:"9996", message: "User exited" })
         }
         else {
             let newUser = new userModel(newUserClient);

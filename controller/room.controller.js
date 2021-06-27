@@ -15,10 +15,10 @@ controller.addNewRoom = async (req,res) => {
 		}
 		else{
 			if(req.query.address === "" || req.query.address === undefined || req.query.address === null){
-	            res.status(200).json({code:"9996", message: "Address is required" })
+	            res.status(200).json({code:"1002", message: "Parameter is not enought" })
 	        }
             else if(req.query.price === "" || req.query.price === undefined || req.query.price === null){
-            	res.status(200).json({code:"9996", message: "Price is required" })
+            	res.status(200).json({code:"1002", message: "Parameter is not enought" })
             }
             else{
             	if(req.file){
@@ -103,8 +103,12 @@ controller.deleteRoom = async (req, res) => {
 			res.status(200).json({code:"1009",message: "Not access."})
 		}
 		else{
-			let deleteRoom = await roomModel.remove({_id: req.query.room_id})
-			res.status(200).json({code:"1000",message: 'OK'})
+			if(req.query.room_id){
+				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+			} else{
+				let deleteRoom = await roomModel.remove({_id: req.query.room_id})
+				res.status(200).json({code:"1000",message: 'OK'})
+			}
 		}
 
 	}
@@ -116,10 +120,15 @@ controller.deleteRoom = async (req, res) => {
 
 controller.getRoomInfor = async (req, res) =>{
 	try{
-		let room_id = req.query.room_id
-		let room_data = await roomModel.findOne({_id: room_id })
-		console.log(room_data)
-		res.status(200).json(room_data)
+		if(req.query.room_id){
+			let room_id = req.query.room_id
+			let room_data = await roomModel.findOne({_id: room_id })
+			console.log(room_data)
+			res.status(200).json({code:"1000", message: "OK",room_data})
+		}
+		else{
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+		}
 	}
 	catch (err) {
         console.log(err);
@@ -136,24 +145,29 @@ controller.getRoomList =async (req,res) =>{
 		}
 
 		else{
-	        let index = isNaN(parseInt( req.query.index)) ? 0 : parseInt( req.query.index)
-	        var count= isNaN(parseInt( req.query.count)) ? 0 :  parseInt( req.query.count)
-	        var room_list = []
-	        let getRoomList = await roomModel.find({ userMaster: req.user.id})
+			if(isNaN(parseInt( req.query.index)) || isNaN(parseInt( req.query.count)) ){
+				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+			} 
+			else {
+				let index = parseInt( req.query.index)
+		        var count= parseInt( req.query.count)
+		        var room_list = []
+		        let getRoomList = await roomModel.find({ userMaster: req.user.id})
 
-	        if( count + index > getRoomList.length ){
-	            count= getRoomList.length-index
-	        }
+		        if( count + index > getRoomList.length ){
+		            count= getRoomList.length-index
+		        }
 
-	        if( index < getRoomList.length ){
-	            for( let i = 1; i<=count; i++){
-	                room_list.push(getRoomList[getRoomList.length-index-i])
-	            }
-	            res.status(200).json({code:"1000", message: "OK", room_list})
-	        }
-	        else{
-	            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
-	        }
+		        if( index < getRoomList.length ){
+		            for( let i = 1; i<=count; i++){
+		                room_list.push(getRoomList[getRoomList.length-index-i])
+		            }
+		            res.status(200).json({code:"1000", message: "OK", room_list})
+		        }
+		        else{
+		            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+		        }
+			}
 		}
 
     }
@@ -194,27 +208,31 @@ controller.getBill = async (req,res) =>{
 
 controller.searchRoom =async (req,res) =>{
 	try{
+		if(isNaN(parseInt(req.query.index)) || isNaN(parseInt(req.query.count)) ){
+			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+		}
+		else{
+			let index =  parseInt(req.query.index)
+	        var count=  parseInt(req.query.count)
+	        var room_list = []
+	        let getRoomList = await roomModel.find()
 
-        let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
-        var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
-        var room_list = []
-        let getRoomList = await roomModel.find()
+	        let searchResult = getRoomList.filter(item => item.address !== undefined && item.address.toLowerCase().indexOf(req.query.keyword) !== -1);
 
-        let searchResult = getRoomList.filter(item => item.address !== undefined && item.address.toLowerCase().indexOf(req.query.keyword) !== -1);
+	        if( count + index > searchResult.length ){
+	            count= searchResult.length-index
+	        }
 
-        if( count + index > searchResult.length ){
-            count= searchResult.length-index
-        }
-
-        if( index < searchResult.length ){
-            for( let i = 1; i<=count; i++){
-                room_list.push(searchResult[searchResult.length-index-i])
-            }
-            res.status(200).json({code:"1000", message: "OK", room_list})
-        }
-        else{
-            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
-        }
+	        if( index < searchResult.length ){
+	            for( let i = 1; i<=count; i++){
+	                room_list.push(searchResult[searchResult.length-index-i])
+	            }
+	            res.status(200).json({code:"1000", message: "OK", room_list})
+	        }
+	        else{
+	            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+	        }
+		}
     }
     catch(err){
         res.status(200).json({error: err.message})

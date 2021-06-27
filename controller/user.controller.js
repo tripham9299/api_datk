@@ -81,8 +81,8 @@ controller.updatePersonalInfor = async (req, res) => {
 controller.changePass = async(req, res) => {
 
     try {
-        if(req.query.new_password!==req.query.retype_password){
-            res.status(200).json({code:"403", message: 'incorect retype_password'})
+        if(req.query.new_password !== req.query.retype_password){
+            res.status(200).json({code:"403", message: 'Incorect retype_password'})
         }
         else{
             let currentUser = await userModel.findById(req.user.id)
@@ -93,9 +93,11 @@ controller.changePass = async(req, res) => {
 
             if (checkPass) {
                 await currentUser.updateOne({password: newPass})
-                res.status(200).json({code:"1000", message: 'OK'})
+                res.status(200).json({code:"1000", message: "OK"})
             }
-            else res.status(200).json({code:"403", message: 'failure'})
+            else {
+                res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+            }
         }
     }
     catch (err) {
@@ -114,9 +116,9 @@ controller.deleteUserById = async (req, res) => {
         }
         else{
             if(isNaN(parseInt(req.query.confirm))){
-                res.status(200).json({code:"403", message: 'failure'})
+                res.status(200).json({code:"1004", message: "Parameter value is invalid"})
             } else {
-                if(req.query.confirm == 1){
+                if(parseInt(req.query.confirm) == 1){
                     let userDelete = await userModel.findByIdAndDelete(req.query.user_id)
                     res.status(200).json({code:"1000",message: 'OK'})
                 } else{

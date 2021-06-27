@@ -38,7 +38,7 @@ controller.deletePost = async (req,res) => {
         res.status(200).json({code:"1000", message: "OK" })
     }
     catch(err){
-         res.status(200).json({error: err})
+        res.status(200).json({error: err})
     }
 }
 
@@ -46,7 +46,11 @@ controller.getPost = async (req,res) =>{
     try{
         let postId= req.query.post_id
         let post_data = await postModel.findOne({_id: postId })
-        res.status(200).json({code:"1000", message: "OK", post_data })
+        if(post_data){
+            res.status(200).json({code:"1000", message: "OK", post_data })
+        } else {
+            res.status(200).json({code:"9992", message: "Post is not existed"})
+        }
     }
     catch(err){
          res.status(200).json({error: err})
@@ -68,23 +72,27 @@ controller.comment= async(req,res)=>{
 controller.getCommentList = async  (req,res) =>{
      try{
         let post_id = req.query.post_id
-        let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
-        var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
-        var comment_list = []
-        let getCommentList = await commentModel.find({ post: post_id})
+        if(isNaN(parseInt(req.query.index)) || isNaN(parseInt(req.query.count))){
+            res.status(200).json({code:"1004", message: "Parameter value is invalid"})
+        } else{
+            let index = isNaN(parseInt(req.query.index)) ? 0 : parseInt(req.query.index)
+            var count= isNaN(parseInt(req.query.count)) ? 1 : parseInt(req.query.count)
+            var comment_list = []
+            let getCommentList = await commentModel.find({ post: post_id})
 
-        if( count + index > getCommentList.length ){
-            count= getCommentList.length-index
-        }
-
-        if( index < getCommentList.length ){
-            for( let i = 1; i<=count; i++){
-                comment_list.push(getCommentList[getCommentList.length-index-i])
+            if( count + index > getCommentList.length ){
+                count= getCommentList.length-index
             }
-            res.status(200).json({code:"1000", message: "OK", comment_list})
-        }
-        else{
-            res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+
+            if( index < getCommentList.length ){
+                for( let i = 1; i<=count; i++){
+                    comment_list.push(getCommentList[getCommentList.length-index-i])
+                }
+                res.status(200).json({code:"1000", message: "OK", comment_list})
+            }
+            else{
+                res.status(200).json({code:"9994", message: "No data or end of list data entry"})
+            }
         }
     }
     catch(err){
