@@ -39,7 +39,7 @@ let isAdmin = async (req, res, next) => {
 	}
 	catch (err) {
 		return res.status(200).json({
-			code: "1009"
+			code: "1009",
 			message: "Not access"
 		})
 	}
