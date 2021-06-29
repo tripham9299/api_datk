@@ -9,9 +9,14 @@ let controller = {}
 controller.rent = async(req,res) =>{
 	try{
 		if(req.query.room_id){
-			let rentBill = await billModel.create({userRent: req.user.id, roomRent: req.query.room_id, status:"unpaid"})
-			let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: req.user.id })
-			res.status(200).json({code:"1000", message: "OK"})
+			let findRoom = await roomModel.findOne({_id:req.query.room_id})
+			if (findRoom.userRent === null){
+				let rentBill = await billModel.create({userRent: req.user.id, roomRent: req.query.room_id, status:"unpaid"})
+				let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: req.user.id })
+				res.status(200).json({code:"1000", message: "OK"})
+			} else{
+				res.status(200).json({code:"9000", message: "Room was rented"})
+			}
 		}
 		else{
 			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
@@ -25,9 +30,14 @@ controller.rent = async(req,res) =>{
 controller.cancelRent = async(req,res) =>{
 	try{
 		if(req.query.room_id){
-			let cancelRent = await billModel.findOneAndUpdate({userRent:req.user.id, roomRent:req.query.room_id},{status:"cancel"})
-			let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: null })
-			res.status(200).json({code:"1000", message: "OK"})
+			let findRoom = await roomModel.findOne({_id:req.query.room_id})
+			if(findRoom.userRent == req.user.id ){
+				let cancelRent = await billModel.findOneAndUpdate({userRent:req.user.id, roomRent:req.query.room_id},{status:"cancel"})
+				let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: null })
+				res.status(200).json({code:"1000", message: "OK"})
+			} else{
+				res.status(200).json({code:"1005", message: "Unknown error"})
+			}	
 		}
 		else{
 			res.status(200).json({code:"1004", message: "Parameter value is invalid"})
