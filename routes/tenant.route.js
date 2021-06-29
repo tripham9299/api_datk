@@ -20,5 +20,7 @@ router.post('/tenantTransfer',authMiddleware.isAuth,tenantController.tenantTrans
 
 router.post('/receiveTenant',authMiddleware.isAuth, tenantController.receiveTenant)
 
+router.post('/listOfRentedRooms',authMiddleware.isAuth, tenantController.getListOfRentedRooms)
+
 
 module.exports = router;

@@ -38,6 +38,16 @@ controller.cancelRent = async(req,res) =>{
     }
 }
 
+controller.getListOfRentedRooms =  async(req,res) =>{
+	try{
+		let room_list = await roomModel.find({userRent:req.user.id})
+		res.status(200).json({code:"1000", message: "OK", room_list})
+	}
+	catch(err){
+         res.status(200).json({error: err.message})
+    }
+} 
+
 controller.addToRoom = async(req,res) =>{
 	try{
 		let checkUserMaster = await userModel.findOne({_id: req.user.id})
