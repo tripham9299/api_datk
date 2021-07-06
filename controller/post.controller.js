@@ -1,10 +1,12 @@
 var postModel = require('../models/post.model')
 var commentModel = require('../models/comment.model')
+var notificationModel = require('../models/notification.model')
 let controller = {}
 
 controller.addNewPost = async (req, res) => {
     try {
         let newPost = await postModel.create({user:req.user.id, content: req.query.content})
+        let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just added a new post"})
         res.status(200).json({code:"1000", message: "OK" })
     }
     catch (err) {
@@ -15,6 +17,7 @@ controller.addNewPost = async (req, res) => {
 controller.updatePost = async ( req, res) => {
     try{
         let updatePost = await postModel.findOneAndUpdate({ _id:req.query.post_id },{ content: req.query.content })
+        let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just updated a post"})
         res.status(200).json({code:"1000", message: "OK" })
     }
     catch(err){
@@ -35,6 +38,7 @@ controller.getPostList = async (req,res) => {
 controller.deletePost = async (req,res) => {
     try{
         let deletePost = await postModel.remove({_id:req.query.post_id})
+        let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just deleted a post"})
         res.status(200).json({code:"1000", message: "OK" })
     }
     catch(err){
@@ -62,6 +66,7 @@ controller.comment= async(req,res)=>{
         let post_id= req.query.post_id
         let comment = req.query.comment
         let newComment= await commentModel.create({user: req.user.id, post: post_id,  content : comment})
+        let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just added a new comment"})
         res.status(200).json({code:"1000", message: "OK"})
     }
     catch(err){

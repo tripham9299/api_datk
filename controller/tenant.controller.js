@@ -1,6 +1,7 @@
 var roomModel = require('../models/room.model')
 var billModel = require('../models/bill.model')
 var userModel = require('../models/user.model')
+var notificationModel = require('../models/notification.model')
 var transferModel = require('../models/transfer.model')
 
 let controller = {}
@@ -13,6 +14,7 @@ controller.rent = async(req,res) =>{
 			if (findRoom.userRent === null){
 				let rentBill = await billModel.create({userRent: req.user.id, roomRent: req.query.room_id, status:"unpaid"})
 				let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: req.user.id })
+				let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just rented a room"})
 				res.status(200).json({code:"1000", message: "OK"})
 			} else{
 				res.status(200).json({code:"9000", message: "Room was rented"})
@@ -34,6 +36,7 @@ controller.cancelRent = async(req,res) =>{
 			if(findRoom.userRent == req.user.id ){
 				let cancelRent = await billModel.findOneAndUpdate({userRent:req.user.id, roomRent:req.query.room_id},{status:"cancel"})
 				let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: null })
+				let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just canceled a room"})
 				res.status(200).json({code:"1000", message: "OK"})
 			} else{
 				res.status(200).json({code:"8889", message: "You do not rent this room"})
@@ -72,6 +75,7 @@ controller.addToRoom = async(req,res) =>{
 				if (findRoom.userRent === null){
 					let addToRoomBill = await billModel.create({userRent: req.query.user_id, roomRent: req.query.room_id, status:"unpaid"})
 					let addToRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: req.query.user_id})
+					let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just added a guest to the room"})
 					res.status(200).json({code:"1000", message: "OK"})
 				} else {
 					res.status(200).json({code:"9000", message: "Room was rented"})
@@ -103,6 +107,7 @@ controller.removeFromRoom = async (req,res) =>{
 				if(findRoom.userRent == req.query.user_id ){
 					let removeFromRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: null})
 					let cancelRent = await billModel.findOneAndUpdate({userRent:req.query.room_id, roomRent:req.query.room_id},{status:"deleted"})
+					let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just removed a guest from the room"})
 					res.status(200).json({code:"1000", message: "OK"})
 				} else {
 					res.status(200).json({code:"8888", message: "Guest do not rent this room"})

@@ -1,6 +1,7 @@
 var roomModel = require('../models/room.model')
 var billModel = require('../models/bill.model')
 var userModel = require('../models/user.model')
+var notificationModel = require('../models/notification.model')
 
 const cloudinary = require('cloudinary').v2
 const streamifier = require('streamifier')
@@ -39,10 +40,12 @@ controller.addNewRoom = async (req,res) => {
 	                };
 	            let result = await streamUpload(req);
 	            let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price, image:result.secure_url})
+	            let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just added a new room"})
 	            res.status(200).json({code:"1000",message: 'OK'})
 	        	}
 		        else{
 					let newRoom = await roomModel.create({userMaster: req.user.id, address: req.query.address, price:req.query.price})
+		            let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just added a new room"})
 		            res.status(200).json({code:"1000",message: 'OK'})
 		        }
             }
@@ -81,6 +84,7 @@ controller.updateRoom = async(req,res) =>{
 	                };
 	            let result = await streamUpload(req);
 	            let updateRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ address: req.query.address, price:req.query.price, image:result.secure_url})
+	            let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just updated a room"})
 	            res.status(200).json({code:"1000",message: 'OK'})
         	}
 	        else{
@@ -105,6 +109,7 @@ controller.deleteRoom = async (req, res) => {
 		else{
 			if(req.query.room_id){
 				let deleteRoom = await roomModel.remove({_id: req.query.room_id})
+				let notificationUser = await notificationModel.create({user:req.user.id, contents:"You just deleted a room"})
 				res.status(200).json({code:"1000",message: 'OK'})
 			} else{
 				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
