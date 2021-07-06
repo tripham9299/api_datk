@@ -67,11 +67,15 @@ controller.addToRoom = async(req,res) =>{
 		}
 
 		else{
-
 			if(req.query.room_id && req.query.user_id){
-				let addToRoomBill = await billModel.create({userRent: req.user.id, roomRent: req.query.room_id, status:"unpaid"})
-				let addToRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: req.query.user_id})
-				res.status(200).json({code:"1000", message: "OK"})
+				let findRoom = await roomModel.findOne({_id:req.query.room_id})
+				if (findRoom.userRent === null){
+					let addToRoomBill = await billModel.create({userRent: req.query.user_id, roomRent: req.query.room_id, status:"unpaid"})
+					let addToRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: req.query.user_id})
+					res.status(200).json({code:"1000", message: "OK"})
+				} else {
+					res.status(200).json({code:"9000", message: "Room was rented"})
+				}
 			}
 			else{
 				res.status(200).json({code:"1004", message: "Parameter value is invalid"})

@@ -104,10 +104,10 @@ controller.deleteRoom = async (req, res) => {
 		}
 		else{
 			if(req.query.room_id){
-				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
-			} else{
 				let deleteRoom = await roomModel.remove({_id: req.query.room_id})
 				res.status(200).json({code:"1000",message: 'OK'})
+			} else{
+				res.status(200).json({code:"1004", message: "Parameter value is invalid"})
 			}
 		}
 
