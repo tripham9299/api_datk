@@ -36,7 +36,7 @@ controller.cancelRent = async(req,res) =>{
 				let rentRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{ userRent: null })
 				res.status(200).json({code:"1000", message: "OK"})
 			} else{
-				res.status(200).json({code:"1005", message: "Unknown error"})
+				res.status(200).json({code:"8889", message: "You do not rent this room"})
 			}	
 		}
 		else{
@@ -99,8 +99,14 @@ controller.removeFromRoom = async (req,res) =>{
 
 			if(req.query.room_id && req.query.user_id){
 
-				let removeFromRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: null})
-				res.status(200).json({code:"1000", message: "OK"})
+				let findRoom = await roomModel.findOne({_id:req.query.room_id})
+				if(findRoom.userRent == req.query.user_id ){
+					let removeFromRoom = await roomModel.findOneAndUpdate({_id:req.query.room_id},{userRent: null})
+					let cancelRent = await billModel.findOneAndUpdate({userRent:req.query.room_id, roomRent:req.query.room_id},{status:"deleted"})
+					res.status(200).json({code:"1000", message: "OK"})
+				} else {
+					res.status(200).json({code:"8888", message: "Guest do not rent this room"})
+				}
 			}
 
 			else{
