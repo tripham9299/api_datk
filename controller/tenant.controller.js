@@ -183,7 +183,7 @@ controller.receiveTenant = async (req,res) =>{
 				}
 				else{
 					if(req.query.host_id && req.query.guest_id){
-						let refuseTransfer = await tranferModel.remove({userMaster:req.user.id,userMasterTransfer:req.query.host_id,userGuest:req.query.guest_id})
+						let refuseTransfer = await transferModel.remove({userMaster:req.user.id,userMasterTransfer:req.query.host_id,userGuest:req.query.guest_id})
 					}
 					else{
 						res.status(200).json({code:"1004", message: "Parameter value is invalid"})
