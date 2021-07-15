@@ -133,7 +133,7 @@ controller.tenantTransfer = async (req,res) =>{
 		}
 		else{
 			if(req.query.host_id && req.query.guest_id && req.query.room_id ){
-				let tranferUser = await tranfersModel.create({userMaster:req.query.host_id, userMasterTransfer: req.user.id, userGuest:req.query.guest_id})
+				let tranferUser = await transferModel.create({userMaster:req.query.host_id, userMasterTransfer: req.user.id, userGuest:req.query.guest_id})
 				let removeUserFromRoom = await roomModel.findOneAndUpdate({_id: req.query.room_id},{userRent:null})
 				res.status(200).json({code:"1000", message: "OK",tranferUser,removeUserFromRoom})
 			}
